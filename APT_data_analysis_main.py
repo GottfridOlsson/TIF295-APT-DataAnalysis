@@ -3,12 +3,13 @@
 ##        File: APT_data_analysis_main.py
 ##      Author: GOTTFRID OLSSON 
 ##     Created: 2022-09-21, 13:18
-##     Updated: 2022-09-21, 13:18
+##     Updated: 2022-09-21, 15:50
 ##       About: Analysis of data from APT lab.
 ##              1. Read CSV files with Cr-RDF
 ##              2. Normalize Cr-RDF
 ##              3. Find wavelength (first max of Cr-RDF)
 ##              4. Linear fit to find amplitude
+##              5. Print values
 ##=======================================================##
 
 
@@ -21,6 +22,8 @@ import pandas as pd
 import os
 import numpy as np
 import linear_regression
+
+
 
 #-------------------#
 #   HELP FUNCTIONS  #
@@ -35,8 +38,6 @@ def read_CSV(read_file_path):
 def get_header_CSV(CSV_data):
     return CSV_data.columns.values
 
-
-
 def get_min_value_and_index(list):
     list = np.array(list)
     min_val = list[0]
@@ -49,20 +50,10 @@ def get_min_value_and_index(list):
     
     return min_val, min_val_index
 
-def get_max_value_and_index(list):
-    list = np.array(list)
-    max_val = list[0]
-    max_val_index = 0
-    
-    for i in range(len(list)):
-        if list[i] > max_val:
-            max_val = list[i]
-            max_val_index = i
-    
-    return max_val, max_val_index
-
 def amplitude_from_RDF(RDF_0, C_0):
     return 2*C_0*np.sqrt(2*RDF_0-1)
+
+
 
 #------------#
 #    MAIN    #
@@ -83,6 +74,7 @@ header_10h  = get_header_CSV(CSV_10h)
 header_100h = get_header_CSV(CSV_100h)
 
 
+
 # PICK OUT DISTANCE AND (BULK NORMALIZED) Cr CONCENTRATION #
 distance_10h  = CSV_10h[header_10h[0]]
 distance_100h = CSV_100h[header_100h[0]] 
@@ -90,19 +82,9 @@ distance_100h = CSV_100h[header_100h[0]]
 Cr_conc_10h  = CSV_10h[header_10h[2]]
 Cr_conc_100h = CSV_100h[header_100h[2]]
 
-Fe_conc_10h  = CSV_10h[header_10h[3]]
-Fe_conc_100h = CSV_100h[header_100h[3]]
 
 
-
-
-# HOW TO DO WAVELENGTH FOR RD for 10h? 
-#min_Cr_conc_10h, min_Cr_conc_10h_index   = get_min_value_and_index(Cr_conc_10h) #doesn't work for Cr_10h because there is no minima...
-
-
-
-# GET WAVELENGTH FROM RDF (100h) #
-
+# GET WAVELENGTH FROM RDF #
 min_Cr_conc_100h, min_Cr_conc_100h_index = get_min_value_and_index(Cr_conc_100h)
 min_distance_100h = distance_100h[min_Cr_conc_100h_index]
 
@@ -112,15 +94,21 @@ for i, Cr_conc in enumerate(Cr_conc_100h):
     if Cr_conc == max_Cr_conc_100h:
         max_distance_100h = distance_100h[i]
 
+max_Cr_conc_10h = np.max(Cr_conc_10h[17:-1]) #by looking at graph
+max_distance_10h = 4.0 #from graph
+
 
 
 # ASSIGN AND PRINT VALUES #
 lambda_100h = {}
 lambda_100h['First maximum'] = max_distance_100h   # [nm]
 lambda_100h['First minimum'] = 2*min_distance_100h # [nm]
-lambda_100h['unit'] = 'nano meter'
+
+lambda_10h = {}
+lambda_10h['First maximum'] = max_distance_10h   # [nm]
 
 print("\nWavelength determined from RDF (100h):\n  From first maximum: " + str(lambda_100h['First maximum']) + " nm\n  From first minimum: " + str(lambda_100h['First minimum']) + " nm")
+print("\nWavelength determined from RDF (10h):\n  From first maximum: " + str(lambda_10h['First maximum']) + " nm")
 
 
 
@@ -138,7 +126,7 @@ for i in range(2):
     m, k = linear_regression.solve_normal_equation(x_data, y_data, degree=1)
 
     if True:
-        x = np.linspace(0,2, 10)
+        x = np.linspace(0,1.5,10)
         y = k*x + m
         plt.plot(distance_10h,  Cr_conc_10h,  marker='o', label='Cr-conc 10h')
         plt.plot(distance_100h, Cr_conc_100h, marker='x', label='Cr-conc 100h')
@@ -150,6 +138,7 @@ for i in range(2):
     RDF_0 = m #intercept y-axis at x=0
     amplitude[i] = amplitude_from_RDF(RDF_0, C_0[i]) # [nm], = 2*A = 2*C_0*sqrt(2*RDF(0)-1)
 
-print("Calculated amplitude for 10h is: " + str(amplitude[0]) + " nm")
-print("Calculated amplitude for 100h is: " + str(amplitude[1]) + " nm")
+print("\nCalculated amplitude for  10h is: " + str(amplitude[0]) + " nm")
+print("Calculated amplitude for 100h is: " + str(amplitude[1]) + " nm\n")
 
+# EOF #
