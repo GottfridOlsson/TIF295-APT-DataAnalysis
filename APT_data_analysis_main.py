@@ -17,7 +17,7 @@
 #---------------#
 
 import pandas as pd
-
+import os
 
 #-------------------#
 #   HELP FUNCTIONS  #
@@ -37,8 +37,11 @@ def get_header_CSV(CSV_data):
 #------------#
 #    MAIN    #
 #------------#
+ 
+CURRENT_PATH  = os.path.abspath(os.path.dirname(__file__))
+CSV_PATH_10h  = '\Data from lab\RDF_10h_removedPole_dist10nm_step0,2nm_bulkNormalizedConc.csv'
+CSV_PATH_100h = '\Data from lab\RDF_100h_removedPole_dist10nm_step0,2nm_bulkNormalizedConc.csv'
 
-CSV_PATH_10h  = 'Datafiles from lab\\RDF_10h_removedPole_dist10nm_step0.2nm.csv'
-CSV_PATH_100h = 'Datafiles from lab\\RDF_100h_removedPole_dist10nm_step0.2nm.csv'
-
-print(read_CSV(CSV_PATH_100h))
+CSV_10h  = read_CSV(CURRENT_PATH + CSV_PATH_10h)
+CSV_100h = read_CSV(CURRENT_PATH + CSV_PATH_100h)
+print(CSV_10h, CSV_100h)
