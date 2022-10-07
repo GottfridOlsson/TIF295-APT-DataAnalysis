@@ -7,7 +7,7 @@
 ##       About: Analysis of data from APT lab.
 ##              1. Read CSV files with normalized Cr-RDF
 ##              2. Find wavelength (first max of Cr-RDF)
-##              3. Linear fit to find amplitude
+##              3. Linear fit to caclulate amplitude
 ##              4. Print values
 ##=======================================================##
 
