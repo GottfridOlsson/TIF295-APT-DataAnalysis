@@ -3,7 +3,7 @@
 ##        File: main.py
 ##      Author: GOTTFRID OLSSON 
 ##     Created: 2022-09-21, 13:18
-##     Updated: 2022-10-05, 13:32
+##     Updated: 2022-10-07, 10:18
 ##       About: Analysis of data from APT lab.
 ##              1. Read CSV files with normalized Cr-RDF
 ##              2. Find wavelength (first max of Cr-RDF)
@@ -142,8 +142,8 @@ print("Calculated amplitude for 100h is: " + str(amplitude[1]) + " %\n")
 print("\nWavelength determined from RDF (100h):\n  From first maximum: " + str(lambda_100h['First maximum']) + " nm\n  From first minimum: " + str(lambda_100h['First minimum']) + " nm")
 print("\nWavelength determined from RDF (10h):\n   From first maximum: " + str(lambda_10h['First maximum']) + " nm")
 
-print("\nWavelength determined from RDF (10h):\n   From linear regression, where line crosses RDF = 1: " + str(4*linear_regression_equals_y_1[0]) + " nm")
-print("\nWavelength determined from RDF (100h):\n  From linear regression, where line crosses RDF = 1: " + str(4*linear_regression_equals_y_1[1]) + " nm")
+print(f"\nWavelength determined from RDF (10h):\n   From linear regression (first {n_first_values[0]} points), where line crosses RDF = 1: " + str(4*linear_regression_equals_y_1[0]) + " nm")
+print(f"\nWavelength determined from RDF (100h):\n  From linear regression (first {n_first_values[1]} points), where line crosses RDF = 1: " + str(4*linear_regression_equals_y_1[1]) + " nm")
 
 
 # EOF #
